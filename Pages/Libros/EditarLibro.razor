@@ -1,4 +1,4 @@
-﻿@page "/crear-libro"
+﻿@page "/editar-libro/{IDLibro:int}"
 @using BlazorServer_LibrosCRUD.Models;
 @using BlazorServer_LibrosCRUD.Repositorio
 @inject IRepositorio Repositorio
@@ -10,12 +10,12 @@
     <div class="card-header">
         <div class="row">
             <div class="col-12">
-                <h2 class="text-dark">Crear libro</h2>
+                <h2 class="text-dark">Editar libro</h2>
             </div>
         </div>
     </div>
     <div class="card-body">
-        <EditForm Model="modeloLibro" OnValidSubmit="@(()=>ManejadorCrearLibro())">
+        <EditForm Model="modeloLibro" OnValidSubmit="@(()=>ManejadorEditarLibro())">
             <DataAnnotationsValidator></DataAnnotationsValidator>
             <div class="container">
 
@@ -82,7 +82,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-2">
-                            <button type="submit" class="btn btn-success"><span class="oi oi-cog" aria-hidden="true"></span> Crear libro</button>
+                            <button type="submit" class="btn btn-success"><span class="oi oi-cog" aria-hidden="true"></span> Actualizar libro</button>
                         </div>
                         <div class="col-6">
                             <button class="btn btn-danger" @onclick="@(()=> navigationManager.NavigateTo("/libros"))"><span class="oi oi-chevron-left" aria-hidden="true"></span> Volver</button>
@@ -98,10 +98,21 @@
 @code {
     private Libro modeloLibro = new Libro();
 
-    //Metodo para crear libro
-    private async Task ManejadorCrearLibro()
+    //Obtenemos parametro que viene en la URL
+    [Parameter]
+    public int? IDLibro { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
-        var crearLibro = await Repositorio.CrearLibro(modeloLibro);
+        modeloLibro = await Repositorio.GetLibroId(IDLibro.Value);
+    }
+
+
+
+    //Metodo para crear libro
+    private async Task ManejadorEditarLibro()
+    {
+        var editarLibro = await Repositorio.ActualizarLibro(IDLibro.Value, modeloLibro);
         navigationManager.NavigateTo("/libros");
     }
 

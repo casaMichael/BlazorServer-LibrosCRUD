@@ -42,7 +42,7 @@
                             <a href="editar-libro/@libro.IDLibro" class="btn btn-success btn-sm">
                                 <span class="oi oi-plus" aria-hidden="true"></span>Editar
                             </a>
-                            <button @onclick="@( () =>BorrarLibro(libro.IDLibro))">
+                            <button class="btn btn-danger btn-sm" @onclick="@( () =>BorrarLibro(libro.IDLibro))">
                                 <span class="oi oi-delete" aria-hidden="true"></span>Borrar
                             </button>     
                         </td>
@@ -67,7 +67,9 @@
     //Metodo borrar libro
     private async Task BorrarLibro(int libroId)
     {
-        
+        await Repositorio.EliminarLibro(libroId);
+        //Devuelve la lista de libros sin refrescar la página
+        listaLibros = await Repositorio.GetLibros();
     }
 
 
